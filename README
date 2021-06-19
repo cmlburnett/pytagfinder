@@ -1,0 +1,39 @@
+pytagfinder
+
+This library looks for tags placed on files by Mac's Finder.
+Currently this library is only tested under Linux.
+
+### Tags ###
+In Finder, tags are placed on files to give meaning as the user sees fit.
+The default tags are colors (Red, Orange, Yellow, Green, Blue, Purple, Gray), but anything can be used.
+
+Finder prefers to store this information in extended attributes (xattr):
+
+	https://en.wikipedia.org/wiki/Extended_file_attributes
+
+If unable, then it stores them in .DS_Store files.
+This library only supports xattr at this time.
+
+
+### Installation ###
+
+sudo python3 setup.py install
+
+### Usage ###
+
+As a python library, the main function I wrote this for is findtag()
+
+	import tagfinder
+	found = tagfinder.findtag('/some/path', 'Orange')
+
+and it returns all files, recursively found, with the tag 'Orange' (default is 'Red').
+
+Alternatively, as a command line tool:
+
+	$ python3 -m findtag -t Orange /some/path
+
+or to get as JSON list
+
+	$ python3 -m findtag -j -t Orange /some/path
+
+
