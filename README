@@ -13,6 +13,15 @@ This library provides the crucial ability to find files to pass into rsync.
 This will find all files with paths relative to /mnt/foo and mirror those matches under /mnt/bar/ as rsync usually does.
 Because of how rsync interprets source paths, it is important that the current working directory and actual source path (/mnt/foo) are the same here.
 
+Alternatively, this form can also be used
+
+	find . -exec python3 -m tagfinder -f '{}' ';' -print
+
+However, this executes the python interpreter on every path that find(1) finds.
+This is painfully slow.
+The problem with this approach is that find is not using tagfinder as a test (ie, like '-type f' is a test) but as something to execute on each path (to which it returns 0 as a match and the -print shows the file name).
+I cannot find how to include a custom test for find that could be used, instead, to speed up performance by being able to test multiple paths in the same python interpreter instance.
+
 ### Tags ###
 In Finder, tags are placed on files to give meaning as the user sees fit.
 The default tags are colors (Red, Orange, Yellow, Green, Blue, Purple, Gray), but anything can be used.

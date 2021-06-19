@@ -7,6 +7,7 @@ import tagfinder
 
 def main():
 	ap = argparse.ArgumentParser(description="Find Mac's Finder tags on files in Linux")
+	ap.add_argument('-f', dest='find', default=False, action='store_true', help="Use when invoked from find(1) command. Only a single path is accepted and program return value of zero if path has the tag. This is slow because find invokes python interpreter for every path tested.")
 	ap.add_argument('-t', dest='tag', metavar='TAG', default="Red", help="Tag to find, default is Red")
 	ap.add_argument('-d', dest='depth', metavar='MAXDEPTH', default=None, help="Specify maximum recursion depth (default is unlimited)")
 	ap.add_argument('-j', dest='json', action='store_true', default=False, help="Print list as JSON instead")
@@ -23,6 +24,13 @@ def main():
 		if args.depth < 0:
 			args.depth = None
 
+	if args.find:
+		ret = tagfinder.hastag(args.PATHS[0], args.tag)
+		if ret:
+			sys.exit(0)
+		else:
+			sys.exit(-1)
+
 	# Accumulate found objects
 	found = []
 
@@ -31,12 +39,12 @@ def main():
 		paths = sys.stdin.readlines()
 		paths = [_.strip() for _ in paths]
 		for a in paths:
-			found += tagfinder.findtag(a, maxdepth=args.depth)
+			found += tagfinder.findtag(a, args.tag, maxdepth=args.depth)
 
 	#
 	else:
 		for a in args.PATHS:
-			found += tagfinder.findtag(a, maxdepth=args.depth)
+			found += tagfinder.findtag(a, args.tag, maxdepth=args.depth)
 
 
 	# Output
