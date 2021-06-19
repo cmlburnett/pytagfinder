@@ -14,6 +14,19 @@ Finder prefers to store this information in extended attributes (xattr):
 If unable, then it stores them in .DS_Store files.
 This library only supports xattr at this time.
 
+Tags are an extended feature and isn't found in most filesystems.
+When a non-HFS+ filesystem is mounted (eg, AFP, SMB) then Finder utilizes other means to store tags.
+Specifically, it stores them in extended attributes and falls back to .DS_Store files.
+If is stored as an extended attribute, it uses user.com.apple.metadata:_kMDItemUserTags and stores the data as a binary plist (bplist)
+
+	https://en.wikipedia.org/wiki/Property_list
+
+The builtin plistlib library is used to read these plists to extract the actual tags assigned.
+Tags are assigned an integer and stored as a newline-separated value of TEXT and NUMBER (eg, "TEXT\nNUMBER") in this attribute.
+If multiple tags are set, then a list of these entries are stored.
+If no tags then this attribute is absent.
+
+TODO: DS_Store not supported yet as my ubuntu+netatalk works fine with extended attributes.
 
 ### Installation ###
 
@@ -35,5 +48,4 @@ Alternatively, as a command line tool:
 or to get as JSON list
 
 	$ python3 -m findtag -j -t Orange /some/path
-
 
